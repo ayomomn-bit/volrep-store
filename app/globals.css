@@ -1,26 +1,134 @@
 @import "tailwindcss";
 
+/*
+ * VOLREP official brand tokens.
+ * Palette: Primary Black #0B0B0B · Secondary Off-White #F5F4F0 ·
+ * Neutral Slate Gray #757B82 · Accent Volt Blue #368FFD.
+ *
+ * Volt Blue is an interaction/technology accent only (~5% max) — never a
+ * primary surface or button fill. Black + off-white carry the brand.
+ *
+ * --muted-foreground is a darkened step off the official Slate Gray, not a
+ * separate brand color: raw #757B82 on the #F5F4F0 surface only reaches
+ * ~3.9:1 contrast, short of the 4.5:1 WCAG AA text minimum. The literal
+ * Slate Gray token (--slate) stays available for borders/icons and for text
+ * on ink surfaces, where it comfortably passes.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #0b0b0b;
+  --paper: #f5f4f0;
+  --slate: #757b82;
+  --volt: #368ffd;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --muted: #ece9e1;
+  --muted-foreground: #5f656b;
+  --border: #e2ded4;
+  --accent: var(--volt);
+  --accent-foreground: var(--paper);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-slate: var(--slate);
+  --color-volt: var(--volt);
+
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-montserrat);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Guards against any inner horizontally-scrolling element (carousels,
+   snap-scroll tracks) leaking into page-level horizontal scroll — this
+   site never intentionally scrolls sideways at the document level. */
+html {
+  overflow-x: hidden;
 }
 
 body {
+  overflow-x: hidden;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+}
+
+/*
+ * Hero product-media entrance (Section 01 Hero only). One-time, subtle,
+ * and skipped entirely for users who prefer reduced motion.
+ */
+@keyframes hero-media-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-media-enter {
+    animation: hero-media-in 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+/*
+ * Recovery Philosophy section (Section 03) — near-imperceptible background
+ * zoom for a cinematic feel. Neutralized for reduced-motion users by the
+ * site-wide safeguard below (animation-iteration-count: 1, duration ~0).
+ */
+@keyframes recovery-bg-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.04);
+  }
+}
+
+.recovery-bg-zoom {
+  animation: recovery-bg-zoom 22s ease-in-out infinite alternate;
+}
+
+/* Mobile testimonial slider (Section 05) — hides the scrollbar for the
+   native horizontal snap-scroll track without disabling scrolling. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Keeps swipe momentum inside the track instead of chaining into the
+     page scroll (the actual source of the horizontal-overflow bug). */
+  overscroll-behavior-x: contain;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Site-wide reduced-motion safeguard: shorten transitions/animations to
+   effectively instant for users who've opted out of motion at the OS level. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
