@@ -3,36 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { ComponentProps } from "react";
-import type { NavLink } from "@/lib/navigation";
-
-// Placeholder link groups. Real support/company pages and social profiles
-// have not been defined yet — labels are standard boilerplate, hrefs stay
-// "#" until the corresponding destinations exist.
-const SHOP_LINKS: NavLink[] = [
-  { href: "/products/volrep-prm", label: "Products" },
-  { href: "/#why-volrep-heading", label: "Technology" },
-  { href: "/#recovery-philosophy-heading", label: "Recovery" },
-];
-
-const SUPPORT_LINKS: NavLink[] = [
-  { href: "#", label: "Contact" },
-  { href: "#", label: "Shipping" },
-  { href: "#", label: "Returns" },
-  { href: "/#faq-heading", label: "FAQ" },
-];
-
-const COMPANY_LINKS: NavLink[] = [
-  { href: "#", label: "About" },
-  { href: "#", label: "Journal" },
-  { href: "#", label: "Privacy" },
-  { href: "#", label: "Terms" },
-];
-
-const SOCIAL_LINKS: (NavLink & { icon: (props: ComponentProps<"svg">) => React.JSX.Element })[] = [
-  { href: "#", label: "Instagram", icon: IconInstagram },
-  { href: "#", label: "TikTok", icon: IconTikTok },
-  { href: "#", label: "YouTube", icon: IconYouTube },
-];
+import type { GlobalShopData, NavLink, SocialPlatform } from "@/lib/shopify/types";
 
 const ICON_PROPS = {
   viewBox: "0 0 24 24",
@@ -105,6 +76,12 @@ function IconYouTube(props: ComponentProps<"svg">) {
     </svg>
   );
 }
+
+const SOCIAL_ICON_BY_PLATFORM: Record<SocialPlatform, { label: string; icon: (props: ComponentProps<"svg">) => React.JSX.Element }> = {
+  instagram: { label: "Instagram", icon: IconInstagram },
+  tiktok: { label: "TikTok", icon: IconTikTok },
+  youtube: { label: "YouTube", icon: IconYouTube },
+};
 
 function IconChevron({ open }: { open: boolean }) {
   return (
@@ -180,7 +157,7 @@ function FooterColumn({ title, links }: { title: string; links: NavLink[] }) {
   );
 }
 
-export function Footer() {
+export function Footer({ data }: { data: GlobalShopData }) {
   return (
     <footer className="border-t border-black/[0.06] bg-[#F8F7F3] md:border-t-0">
       <div className="mx-auto w-full max-w-[1400px] px-4 pt-10 pb-10 md:px-6 md:pt-8 md:pb-12 lg:px-8 lg:pt-10 lg:pb-16">
@@ -188,14 +165,15 @@ export function Footer() {
           <div className="flex flex-col gap-9 md:grid md:grid-cols-4 md:gap-x-8 md:gap-y-12 md:text-left lg:gap-x-16">
             <div className="text-center md:col-span-1 md:text-left">
               <span className="text-2xl font-bold tracking-tight text-foreground md:text-xl">
-                VOLREP<span aria-hidden="true">™</span>
+                {data.shopName}
+                <span aria-hidden="true">™</span>
               </span>
               <p className="mt-2 text-xs text-muted-foreground md:mt-3 md:text-sm">Recover Every Day.</p>
             </div>
 
-            <FooterColumn title="Shop" links={SHOP_LINKS} />
-            <FooterColumn title="Support" links={SUPPORT_LINKS} />
-            <FooterColumn title="Company" links={COMPANY_LINKS} />
+            {data.footerMenu.map((column) => (
+              <FooterColumn key={column.title} title={column.title} links={column.links} />
+            ))}
           </div>
 
           <div className="mt-9 border-t border-black/[0.06] md:mt-20" />
@@ -215,20 +193,24 @@ export function Footer() {
 
           <div className="flex flex-col items-center gap-6 border-t border-black/[0.06] pt-8 md:flex-row md:justify-between md:gap-4">
             <p className="text-[11px] text-muted-foreground md:text-xs">
-              &copy; {new Date().getFullYear()} VOLREP<span aria-hidden="true">™</span>. All rights reserved.
+              &copy; {new Date().getFullYear()} {data.shopName}
+              <span aria-hidden="true">™</span>. All rights reserved.
             </p>
 
             <div className="flex items-center gap-6">
-              {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  className="text-muted-foreground opacity-100 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:text-foreground hover:opacity-80 active:opacity-50 md:hover:opacity-100 md:active:opacity-100"
-                >
-                  <Icon className="h-5 w-5 md:h-[18px] md:w-[18px]" />
-                </Link>
-              ))}
+              {data.socialLinks.map(({ href, platform }) => {
+                const { label, icon: Icon } = SOCIAL_ICON_BY_PLATFORM[platform];
+                return (
+                  <Link
+                    key={platform}
+                    href={href}
+                    aria-label={label}
+                    className="text-muted-foreground opacity-100 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:text-foreground hover:opacity-80 active:opacity-50 md:hover:opacity-100 md:active:opacity-100"
+                  >
+                    <Icon className="h-5 w-5 md:h-[18px] md:w-[18px]" />
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>

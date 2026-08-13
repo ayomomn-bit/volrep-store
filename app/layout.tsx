@@ -3,6 +3,7 @@ import { Montserrat, Inter } from "next/font/google";
 import { PromoBar } from "@/components/layout/PromoBar";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { getGlobalShopData } from "@/lib/shopify/global";
 import "./globals.css";
 
 // Official VOLREP typography: Montserrat Bold for headings, Aeonik Regular
@@ -27,7 +28,9 @@ export const metadata: Metadata = {
   description: "VOLREP™ — Recover Every Day. Shop the VOLREP PRM™ Percussive Recovery Massager.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const globalData = await getGlobalShopData();
+
   return (
     <html
       lang="en"
@@ -35,9 +38,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col font-sans">
         <PromoBar />
-        <Header />
+        <Header data={globalData} />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <Footer data={globalData} />
       </body>
     </html>
   );

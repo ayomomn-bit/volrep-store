@@ -1,13 +1,39 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import { MobileNav } from "@/components/layout/MobileNav";
-import { NAV_LINKS } from "@/lib/navigation";
+import type { GlobalShopData, ShopLogo } from "@/lib/shopify/types";
 
 const FOCUS_RING =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volt focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+
+// Renders whatever getShopLogo() resolved to: a real image (once Shopify
+// Files/Metaobjects provide one) or the text wordmark fallback in use today.
+// The "™" mark is static typographic notation, not brand data.
+function Logo({ logo, className }: { logo: ShopLogo; className: string }) {
+  if (logo.type === "image") {
+    return (
+      <Image
+        src={logo.url}
+        alt={logo.altText ?? ""}
+        width={160}
+        height={40}
+        className={`h-6 w-auto lg:h-7 ${className}`}
+        priority
+      />
+    );
+  }
+
+  return (
+    <span className={className}>
+      {logo.text}
+      <span aria-hidden="true">™</span>
+    </span>
+  );
+}
 
 function CartIcon(props: React.ComponentProps<"svg">) {
   return (
@@ -25,7 +51,7 @@ function CartIcon(props: React.ComponentProps<"svg">) {
 // interactivity that isn't wired to anything.
 const CART_ITEM_COUNT = 0;
 
-export function Header() {
+export function Header({ data }: { data: GlobalShopData }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -45,13 +71,13 @@ export function Header() {
         <div className="grid h-[60px] grid-cols-3 items-center lg:h-[72px]">
           {/* Left: hamburger (<1024px) / logo (≥1024px) */}
           <div className="flex items-center justify-self-start">
-            <MobileNav />
+            <MobileNav data={data} />
             <Link
               href="/"
-              aria-label="VOLREP home"
-              className={`hidden font-heading text-xl font-bold tracking-tight text-ink lg:inline-flex ${FOCUS_RING} rounded-sm`}
+              aria-label={`${data.shopName} home`}
+              className={`hidden lg:inline-flex ${FOCUS_RING} rounded-sm`}
             >
-              VOLREP<span aria-hidden="true">™</span>
+              <Logo logo={data.logo} className="font-heading text-xl font-bold tracking-tight text-ink" />
             </Link>
           </div>
 
@@ -59,15 +85,15 @@ export function Header() {
           <div className="flex items-center justify-self-center">
             <Link
               href="/"
-              aria-label="VOLREP home"
-              className={`font-heading text-lg font-bold tracking-tight text-ink lg:hidden ${FOCUS_RING} rounded-sm`}
+              aria-label={`${data.shopName} home`}
+              className={`lg:hidden ${FOCUS_RING} rounded-sm`}
             >
-              VOLREP<span aria-hidden="true">™</span>
+              <Logo logo={data.logo} className="font-heading text-lg font-bold tracking-tight text-ink" />
             </Link>
 
             <nav aria-label="Primary" className="hidden lg:block">
               <ul className="flex items-center gap-9">
-                {NAV_LINKS.map((link) => (
+                {data.mainMenu.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { ComponentProps } from "react";
-import { DRAWER_LINKS } from "@/lib/navigation";
+import type { GlobalShopData, SocialPlatform } from "@/lib/shopify/types";
 
 const FOCUS_RING =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volt focus-visible:ring-offset-2";
@@ -80,13 +80,13 @@ function IconYouTube(props: ComponentProps<"svg">) {
   );
 }
 
-const SOCIAL_LINKS = [
-  { href: "#", label: "Instagram", icon: IconInstagram },
-  { href: "#", label: "TikTok", icon: IconTikTok },
-  { href: "#", label: "YouTube", icon: IconYouTube },
-];
+const SOCIAL_ICON_BY_PLATFORM: Record<SocialPlatform, { label: string; icon: (props: ComponentProps<"svg">) => React.JSX.Element }> = {
+  instagram: { label: "Instagram", icon: IconInstagram },
+  tiktok: { label: "TikTok", icon: IconTikTok },
+  youtube: { label: "YouTube", icon: IconYouTube },
+};
 
-export function MobileNav() {
+export function MobileNav({ data }: { data: GlobalShopData }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -141,7 +141,8 @@ export function MobileNav() {
       >
         <div className="flex h-[60px] shrink-0 items-center justify-between px-5">
           <span className="font-heading text-lg font-bold tracking-tight text-ink">
-            VOLREP<span aria-hidden="true">™</span>
+            {data.shopName}
+            <span aria-hidden="true">™</span>
           </span>
           <button
             type="button"
@@ -157,7 +158,7 @@ export function MobileNav() {
 
         <nav aria-label="Mobile primary" className="flex flex-1 flex-col px-5 pb-8">
           <ul className="flex flex-col">
-            {DRAWER_LINKS.map((link) => (
+            {data.drawerMenu.map((link) => (
               <li key={link.label} className="border-b border-[#ECECEC]">
                 <Link
                   href={link.href}
@@ -171,16 +172,19 @@ export function MobileNav() {
           </ul>
 
           <div className="mt-7 flex items-center gap-6">
-            {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
-              <Link
-                key={label}
-                href={href}
-                aria-label={label}
-                className={`text-ink/60 transition-colors duration-200 ease-out hover:text-ink ${FOCUS_RING} focus-visible:ring-offset-white rounded-sm`}
-              >
-                <Icon />
-              </Link>
-            ))}
+            {data.socialLinks.map(({ href, platform }) => {
+              const { label, icon: Icon } = SOCIAL_ICON_BY_PLATFORM[platform];
+              return (
+                <Link
+                  key={platform}
+                  href={href}
+                  aria-label={label}
+                  className={`text-ink/60 transition-colors duration-200 ease-out hover:text-ink ${FOCUS_RING} focus-visible:ring-offset-white rounded-sm`}
+                >
+                  <Icon />
+                </Link>
+              );
+            })}
           </div>
 
           <div className="mt-auto flex flex-col gap-4 border-t border-[#ECECEC] pt-6">
