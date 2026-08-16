@@ -69,9 +69,9 @@ const FALLBACK_FOOTER_MENU: FooterMenuColumn[] = [
   {
     title: "Support",
     links: [
-      { href: "#", label: "Contact" },
-      { href: "#", label: "Shipping" },
-      { href: "#", label: "Returns" },
+      { href: "/contact", label: "Contact" },
+      { href: "/shipping", label: "Shipping" },
+      { href: "/returns", label: "Returns" },
       { href: "/#faq-heading", label: "FAQ" },
     ],
   },
@@ -80,8 +80,8 @@ const FALLBACK_FOOTER_MENU: FooterMenuColumn[] = [
     links: [
       { href: "#", label: "About" },
       { href: "#", label: "Journal" },
-      { href: "#", label: "Privacy" },
-      { href: "#", label: "Terms" },
+      { href: "/privacy", label: "Privacy" },
+      { href: "/terms", label: "Terms" },
     ],
   },
 ];
@@ -118,27 +118,6 @@ type RawGlobalShopData = {
     items: { title: string; url: string; items: { title: string; url: string }[] }[];
   } | null;
 };
-
-// Applies live policy URLs onto the fallback footer columns' placeholder
-// "#" links, keyed by label. Only matters while USE_SHOPIFY_FOOTER_MENU is
-// off — once Shopify's footer menu is the source of truth, policy links are
-// authored directly in Shopify Admin and need no injection here.
-function applyPolicyUrls(columns: FooterMenuColumn[], policies: ShopPolicies): FooterMenuColumn[] {
-  const hrefByLabel: Record<string, string | undefined> = {
-    Privacy: policies.privacyPolicy?.url,
-    Terms: policies.termsOfService?.url,
-    Shipping: policies.shippingPolicy?.url,
-    Returns: policies.refundPolicy?.url,
-  };
-
-  return columns.map((column) => ({
-    ...column,
-    links: column.links.map((link) => {
-      const liveHref = hrefByLabel[link.label];
-      return liveHref ? { ...link, href: liveHref } : link;
-    }),
-  }));
-}
 
 // React's cache() dedupes this per request — Header and Footer both need
 // shop/menu data, but that's one GraphQL round trip, not two.
@@ -224,8 +203,6 @@ export async function getDrawerMenu(): Promise<NavLink[]> {
 }
 
 export async function getFooterMenu(): Promise<FooterMenuColumn[]> {
-  const policies = await getShopPolicies();
-
   if (USE_SHOPIFY_FOOTER_MENU) {
     const raw = await fetchRawGlobalShopData();
     const items = raw?.footerMenu?.items;
@@ -237,7 +214,12 @@ export async function getFooterMenu(): Promise<FooterMenuColumn[]> {
     }
   }
 
-  return applyPolicyUrls(FALLBACK_FOOTER_MENU, policies);
+  // Privacy/Terms/Shipping/Returns now resolve to this site's own
+  // first-party pages (app/privacy, app/terms, app/shipping, app/returns)
+  // rather than Shopify's auto-generated hosted policy pages — so these
+  // fallback links are authoritative and intentionally not overwritten by
+  // live Shopify policy URLs the way they used to be.
+  return FALLBACK_FOOTER_MENU;
 }
 
 export async function getShopPolicies(): Promise<ShopPolicies> {

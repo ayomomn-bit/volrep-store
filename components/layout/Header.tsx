@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { useCart } from "@/components/cart/CartProvider";
 import type { GlobalShopData, ShopLogo } from "@/lib/shopify/types";
 
 const FOCUS_RING =
@@ -51,14 +52,9 @@ function CartIcon(props: React.ComponentProps<"svg">) {
   );
 }
 
-// Cart has no backing state yet (no add-to-cart flow exists anywhere in the
-// app). This stays a plain constant rather than useState so the badge is
-// structurally correct — it renders only when count > 0 — without faking
-// interactivity that isn't wired to anything.
-const CART_ITEM_COUNT = 0;
-
 export function Header({ data }: { data: GlobalShopData }) {
   const [scrolled, setScrolled] = useState(false);
+  const { cartCount, openDrawer } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -119,21 +115,22 @@ export function Header({ data }: { data: GlobalShopData }) {
 
           {/* Right: cart */}
           <div className="flex items-center justify-self-end">
-            <Link
-              href="/products/volrep-prm"
-              aria-label={CART_ITEM_COUNT > 0 ? `Cart, ${CART_ITEM_COUNT} items` : "Cart"}
+            <button
+              type="button"
+              onClick={openDrawer}
+              aria-label={cartCount > 0 ? `Cart, ${cartCount} items` : "Cart"}
               className={`relative flex h-11 w-11 items-center justify-center rounded-sm text-white transition-colors duration-200 ease-out hover:text-volt lg:text-white ${FOCUS_RING} lg:focus-visible:ring-offset-black`}
             >
               <CartIcon className="h-[22px] w-[22px] lg:h-6 lg:w-6" />
-              {CART_ITEM_COUNT > 0 && (
+              {cartCount > 0 && (
                 <span
                   aria-hidden="true"
                   className="absolute right-1.5 top-1.5 flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-ink px-1 text-[10px] font-semibold leading-none text-white"
                 >
-                  {CART_ITEM_COUNT}
+                  {cartCount}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
       </Container>

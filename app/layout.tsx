@@ -3,6 +3,8 @@ import { Montserrat, Inter } from "next/font/google";
 import { PromoBar } from "@/components/layout/PromoBar";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { CartProvider } from "@/components/cart/CartProvider";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { getGlobalShopData } from "@/lib/shopify/global";
 import "./globals.css";
 
@@ -37,10 +39,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${montserrat.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
-        <PromoBar />
-        <Header data={globalData} />
-        <main className="flex-1">{children}</main>
-        <Footer data={globalData} />
+        <CartProvider>
+          <PromoBar />
+          <Header data={globalData} />
+          <main className="flex-1">{children}</main>
+          <Footer data={globalData} />
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );

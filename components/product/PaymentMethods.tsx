@@ -31,10 +31,30 @@ function IconVisa(props: ComponentProps<"svg">) {
   );
 }
 
+// Same official path geometry as before, split into its 3 natural
+// sub-regions (left circle / right circle / centre lens — the exact
+// boundary this one path already traced) instead of one monochrome fill,
+// so the real red+yellow+orange Mastercard mark can render without
+// hand-drawing anything new. The right circle's subpath is rewritten from
+// its original relative "m5.241-13.447" to an absolute "M16.584 4.584"
+// (11.343+5.241, 18.031-13.447 — the exact point it already resolved to)
+// since a lowercase m loses its relative-to-previous-subpath meaning once
+// split into its own standalone <path>.
 function IconMastercard(props: ComponentProps<"svg">) {
   return (
     <PaymentIcon label="Mastercard" viewBox="-0.5 4.08 25 15.83" {...props}>
-      <path d="M11.343 18.031c.058.049.12.098.181.146-1.177.783-2.59 1.238-4.107 1.238C3.32 19.416 0 16.096 0 12c0-4.095 3.32-7.416 7.416-7.416 1.518 0 2.931.456 4.105 1.238-.06.051-.12.098-.165.15C9.6 7.489 8.595 9.688 8.595 12c0 2.311 1.001 4.51 2.748 6.031zm5.241-13.447c-1.52 0-2.931.456-4.105 1.238.06.051.12.098.165.15C14.4 7.489 15.405 9.688 15.405 12c0 2.31-1.001 4.507-2.748 6.031-.058.049-.12.098-.181.146 1.177.783 2.588 1.238 4.107 1.238C20.68 19.416 24 16.096 24 12c0-4.094-3.32-7.416-7.416-7.416zM12 6.174c-.096.075-.189.15-.28.231C10.156 7.764 9.169 9.765 9.169 12c0 2.236.987 4.236 2.551 5.595.09.08.185.158.28.232.096-.074.189-.152.28-.232 1.563-1.359 2.551-3.359 2.551-5.595 0-2.235-.987-4.236-2.551-5.595-.09-.08-.184-.156-.28-.231z" />
+      <path
+        fill="#EB001B"
+        d="M11.343 18.031c.058.049.12.098.181.146-1.177.783-2.59 1.238-4.107 1.238C3.32 19.416 0 16.096 0 12c0-4.095 3.32-7.416 7.416-7.416 1.518 0 2.931.456 4.105 1.238-.06.051-.12.098-.165.15C9.6 7.489 8.595 9.688 8.595 12c0 2.311 1.001 4.51 2.748 6.031z"
+      />
+      <path
+        fill="#F79E1B"
+        d="M16.584 4.584c-1.52 0-2.931.456-4.105 1.238.06.051.12.098.165.15C14.4 7.489 15.405 9.688 15.405 12c0 2.31-1.001 4.507-2.748 6.031-.058.049-.12.098-.181.146 1.177.783 2.588 1.238 4.107 1.238C20.68 19.416 24 16.096 24 12c0-4.094-3.32-7.416-7.416-7.416z"
+      />
+      <path
+        fill="#FF5F00"
+        d="M12 6.174c-.096.075-.189.15-.28.231C10.156 7.764 9.169 9.765 9.169 12c0 2.236.987 4.236 2.551 5.595.09.08.185.158.28.232.096-.074.189-.152.28-.232 1.563-1.359 2.551-3.359 2.551-5.595 0-2.235-.987-4.236-2.551-5.595-.09-.08-.184-.156-.28-.231z"
+      />
     </PaymentIcon>
   );
 }
@@ -71,13 +91,33 @@ function IconPayPal(props: ComponentProps<"svg">) {
   );
 }
 
-const ICONS = [IconVisa, IconMastercard, IconAmex, IconApplePay, IconGooglePay, IconPayPal];
+// Brand colors, applied via `color` (each icon's fill is currentColor —
+// Mastercard is the one exception, already hardcoded per-path above since
+// its mark is inherently 3 colors, not 1). Visa/Amex/PayPal are each
+// official single-tone marks, so one hex fully represents them. Google
+// Pay's is the real constraint worth noting: this asset is the full
+// "G Pay" wordmark (not the standalone 4-color "G" app icon), and Google's
+// own brand guidelines render that wordmark as a single flat color — so
+// their brand blue here is the accurate treatment, not a cut corner on
+// "multi-color".
+const PAYMENT_METHODS = [
+  { Icon: IconVisa, color: "#1A1F71" },
+  { Icon: IconMastercard, color: undefined },
+  { Icon: IconAmex, color: "#006FCF" },
+  { Icon: IconApplePay, color: "#000000" },
+  { Icon: IconGooglePay, color: "#4285F4" },
+  { Icon: IconPayPal, color: "#003087" },
+];
 
 export function PaymentMethods() {
   return (
-    <ul className="flex flex-wrap items-center gap-x-6 gap-y-3 text-ink/80">
-      {ICONS.map((Icon) => (
-        <li key={Icon.name} className="flex items-center transition-opacity duration-[250ms] ease-out hover:text-ink hover:opacity-100">
+    <ul className="flex flex-wrap items-center gap-x-6 gap-y-3">
+      {PAYMENT_METHODS.map(({ Icon, color }) => (
+        <li
+          key={Icon.name}
+          className="flex items-center opacity-90 transition-opacity duration-[250ms] ease-out hover:opacity-100"
+          style={color ? { color } : undefined}
+        >
           <Icon className="h-[30px] w-auto" />
         </li>
       ))}
