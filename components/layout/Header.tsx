@@ -10,6 +10,12 @@ import type { GlobalShopData, ShopLogo } from "@/lib/shopify/types";
 const FOCUS_RING =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volt focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
+// For elements that only ever render against the black desktop header
+// (never the white mobile/tablet one) — the logo's desktop instance and
+// the desktop nav links.
+const FOCUS_RING_ON_DARK =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volt focus-visible:ring-offset-2 focus-visible:ring-offset-black";
+
 // Renders whatever getShopLogo() resolved to: a real image (once Shopify
 // Files/Metaobjects provide one) or the text wordmark fallback in use today.
 // The "™" mark is static typographic notation, not brand data.
@@ -63,7 +69,7 @@ export function Header({ data }: { data: GlobalShopData }) {
 
   return (
     <header
-      className={`sticky top-0 z-40 border-b border-[#ECECEC] bg-white transition-shadow duration-300 ease-out ${
+      className={`sticky top-0 z-40 border-b border-[#ECECEC] bg-black transition-[background-color,border-color,box-shadow] duration-300 ease-out lg:border-white/10 lg:bg-black ${
         scrolled ? "shadow-[0_2px_10px_rgba(0,0,0,0.05)]" : "shadow-none"
       }`}
     >
@@ -75,9 +81,9 @@ export function Header({ data }: { data: GlobalShopData }) {
             <Link
               href="/"
               aria-label={`${data.shopName} home`}
-              className={`hidden lg:inline-flex ${FOCUS_RING} rounded-sm`}
+              className={`hidden lg:inline-flex ${FOCUS_RING_ON_DARK} rounded-sm`}
             >
-              <Logo logo={data.logo} className="font-heading text-xl font-bold tracking-tight text-ink" />
+              <Logo logo={data.logo} className="font-heading text-xl font-bold tracking-tight text-white" />
             </Link>
           </div>
 
@@ -88,7 +94,7 @@ export function Header({ data }: { data: GlobalShopData }) {
               aria-label={`${data.shopName} home`}
               className={`lg:hidden ${FOCUS_RING} rounded-sm`}
             >
-              <Logo logo={data.logo} className="font-heading text-lg font-bold tracking-tight text-ink" />
+              <Logo logo={data.logo} className="font-heading text-lg font-bold tracking-tight text-white" />
             </Link>
 
             <nav aria-label="Primary" className="hidden lg:block">
@@ -97,12 +103,12 @@ export function Header({ data }: { data: GlobalShopData }) {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className={`group relative inline-flex rounded-sm py-2 text-[15px] font-medium tracking-[0.02em] text-ink/70 transition-colors duration-200 ease-out hover:text-ink focus-visible:text-ink ${FOCUS_RING}`}
+                      className={`group relative inline-flex rounded-sm py-2 text-[15px] font-medium tracking-[0.02em] text-white/70 transition-colors duration-200 ease-out hover:text-white focus-visible:text-white ${FOCUS_RING_ON_DARK}`}
                     >
                       {link.label}
                       <span
                         aria-hidden="true"
-                        className="absolute inset-x-0 -bottom-0.5 h-px origin-center scale-x-0 bg-ink transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100"
+                        className="absolute inset-x-0 -bottom-0.5 h-px origin-center scale-x-0 bg-white transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100"
                       />
                     </Link>
                   </li>
@@ -116,7 +122,7 @@ export function Header({ data }: { data: GlobalShopData }) {
             <Link
               href="/products/volrep-prm"
               aria-label={CART_ITEM_COUNT > 0 ? `Cart, ${CART_ITEM_COUNT} items` : "Cart"}
-              className={`relative flex h-11 w-11 items-center justify-center rounded-sm text-ink transition-colors duration-200 ease-out hover:text-volt ${FOCUS_RING}`}
+              className={`relative flex h-11 w-11 items-center justify-center rounded-sm text-white transition-colors duration-200 ease-out hover:text-volt lg:text-white ${FOCUS_RING} lg:focus-visible:ring-offset-black`}
             >
               <CartIcon className="h-[22px] w-[22px] lg:h-6 lg:w-6" />
               {CART_ITEM_COUNT > 0 && (

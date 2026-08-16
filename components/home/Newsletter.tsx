@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Container } from "@/components/layout/Container";
 
 // Tailwind's transition-delay scale — literal strings so the JIT scanner
 // picks them up even though they're selected dynamically below.
@@ -54,7 +55,10 @@ export function Newsletter() {
 
   return (
     <section ref={sectionRef} aria-labelledby="newsletter-heading" className="bg-[#F8F7F3]">
-      <div className="mx-auto w-full max-w-[1200px] px-4 pt-10 pb-8 sm:px-6 sm:pt-14 sm:pb-8 lg:px-8 lg:pt-16 lg:pb-10">
+      {/* Same shared <Container> every other section uses (not a bespoke
+          max-w-[1200px] wrapper) — keeps this section's left/right edges on
+          the site's one content grid instead of its own one-off width. */}
+      <Container className="pt-10 pb-8 sm:pt-14 sm:pb-8 lg:pt-16 lg:pb-10">
         <div className="mx-auto max-w-xl text-center">
           <p className={`flex items-center justify-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground ${revealClass(visible, 0)}`}>
             <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-volt" />
@@ -93,7 +97,7 @@ export function Newsletter() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="Enter your email"
-                className="h-[60px] w-full rounded-full border border-black/[0.08] bg-white px-6 text-sm text-foreground outline-none transition-colors duration-300 ease-out placeholder:text-muted-foreground focus:border-[#4F8CFF] sm:w-[420px]"
+                className="h-[60px] w-full rounded-full border border-black/[0.08] bg-white px-6 text-sm text-foreground outline-none transition-colors duration-300 ease-out placeholder:text-muted-foreground focus:border-volt sm:w-[420px]"
               />
 
               <button
@@ -107,7 +111,7 @@ export function Newsletter() {
         </div>
 
         <div className="mt-10 border-t border-black/[0.06] sm:mt-12" />
-      </div>
+      </Container>
     </section>
   );
 }

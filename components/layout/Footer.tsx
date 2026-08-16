@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { ComponentProps } from "react";
+import { PageContainer } from "@/components/layout/PageContainer";
 import type { GlobalShopData, NavLink, SocialPlatform } from "@/lib/shopify/types";
 
 const ICON_PROPS = {
@@ -160,7 +161,12 @@ function FooterColumn({ title, links }: { title: string; links: NavLink[] }) {
 export function Footer({ data }: { data: GlobalShopData }) {
   return (
     <footer className="border-t border-black/[0.06] bg-[#F8F7F3] md:border-t-0">
-      <div className="mx-auto w-full max-w-[1400px] px-4 pt-10 pb-10 md:px-6 md:pt-8 md:pb-12 lg:px-8 lg:pt-10 lg:pb-16">
+      {/* Same <PageContainer> (1440px) every product-page section uses —
+          footer content now lines up with the same left/right edges as
+          Hero/LifestyleBenefits above it instead of its own bespoke
+          max-w-[1400px] width. Vertical (pt/pb) padding stays footer-owned,
+          passed through className rather than baked into PageContainer. */}
+      <PageContainer className="pt-10 pb-10 md:pt-8 md:pb-12 lg:pt-10 lg:pb-16">
         <div className="mx-auto max-w-[340px] md:max-w-none">
           <div className="flex flex-col gap-9 md:grid md:grid-cols-4 md:gap-x-8 md:gap-y-12 md:text-left lg:gap-x-16">
             <div className="text-center md:col-span-1 md:text-left">
@@ -214,7 +220,7 @@ export function Footer({ data }: { data: GlobalShopData }) {
             </div>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </footer>
   );
 }

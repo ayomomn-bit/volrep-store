@@ -1,3 +1,7 @@
+// Full product detail for app/products/[handle] — everything ProductHero's
+// subtree needs (gallery images, every option/variant for VariantPicker,
+// and both the display price and the per-variant prices AddToCart/
+// ProductPrice will switch between once variant selection is wired up).
 export const GET_PRODUCT = `
   query GetProduct($handle: String!) {
     product(handle: $handle) {
@@ -5,11 +9,60 @@ export const GET_PRODUCT = `
       title
       handle
       description
+      availableForSale
       featuredImage {
         url
         altText
+        width
+        height
+      }
+      images(first: 10) {
+        nodes {
+          url
+          altText
+          width
+          height
+        }
+      }
+      options {
+        id
+        name
+        optionValues {
+          name
+        }
+      }
+      variants(first: 100) {
+        nodes {
+          id
+          title
+          availableForSale
+          selectedOptions {
+            name
+            value
+          }
+          price {
+            amount
+            currencyCode
+          }
+          compareAtPrice {
+            amount
+            currencyCode
+          }
+          image {
+            url
+            altText
+            width
+            height
+          }
+        }
       }
       priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      compareAtPriceRange {
         minVariantPrice {
           amount
           currencyCode

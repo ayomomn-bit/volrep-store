@@ -86,8 +86,14 @@ export function FinalCTA() {
       ref={sectionRef}
       aria-labelledby="final-cta-heading"
       className="relative overflow-hidden border-b border-white/[0.08] pt-16 pb-10 sm:pt-20 sm:pb-14 lg:pt-24 lg:pb-16"
+      // rgba(54,143,253,...) is the app's --volt brand blue in raw-rgba
+      // form (needed here for the alpha fade; the CSS var itself is a plain
+      // hex). This previously used rgba(59,130,246,...) — a very close but
+      // not-quite-matching blue — so the two "brand blues" in this one
+      // section didn't actually agree with each other or with the volt
+      // token used everywhere else.
       style={{
-        background: "radial-gradient(circle at center, rgba(59,130,246,0.12) 0%, transparent 45%), #070707",
+        background: "radial-gradient(circle at center, rgba(54,143,253,0.12) 0%, transparent 45%), #070707",
       }}
     >
       <Container className="relative">
@@ -115,7 +121,7 @@ export function FinalCTA() {
           >
             <Link
               href="/products/volrep-prm"
-              className="inline-flex h-14 w-full items-center justify-center rounded-full bg-white px-9 text-base font-semibold text-ink transition-all duration-[350ms] ease-out hover:scale-[1.03] hover:shadow-[0_20px_50px_-10px_rgba(59,130,246,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volt focus-visible:ring-offset-2 focus-visible:ring-offset-ink sm:w-auto"
+              className="inline-flex h-14 w-full items-center justify-center rounded-full bg-white px-9 text-base font-semibold text-ink transition-all duration-[350ms] ease-out hover:scale-[1.03] hover:shadow-[0_20px_50px_-10px_rgba(54,143,253,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volt focus-visible:ring-offset-2 focus-visible:ring-offset-ink sm:w-auto"
             >
               Shop Now
             </Link>

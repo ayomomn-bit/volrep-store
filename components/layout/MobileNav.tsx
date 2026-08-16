@@ -113,7 +113,7 @@ export function MobileNav({ data }: { data: GlobalShopData }) {
         aria-expanded={open}
         aria-controls="mobile-menu"
         aria-label="Open menu"
-        className={`flex h-11 w-11 items-center justify-center rounded-sm text-ink ${FOCUS_RING} focus-visible:ring-offset-white`}
+        className={`flex h-11 w-11 items-center justify-center rounded-sm text-white ${FOCUS_RING} focus-visible:ring-offset-black`}
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6" aria-hidden="true">
           <path strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
