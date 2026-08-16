@@ -99,7 +99,7 @@ export function Header({ data }: { data: GlobalShopData }) {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className={`group relative inline-flex rounded-sm py-2 text-[15px] font-medium tracking-[0.02em] text-white/70 transition-colors duration-200 ease-out hover:text-white focus-visible:text-white ${FOCUS_RING_ON_DARK}`}
+                      className={`group relative inline-flex whitespace-nowrap rounded-sm py-2 text-[15px] font-medium tracking-[0.02em] text-white/70 transition-colors duration-200 ease-out hover:text-white focus-visible:text-white ${FOCUS_RING_ON_DARK}`}
                     >
                       {link.label}
                       <span

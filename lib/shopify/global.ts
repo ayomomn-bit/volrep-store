@@ -45,7 +45,8 @@ const FALLBACK_MAIN_MENU: NavLink[] = [
   { href: "/", label: "Home" },
   { href: "/products/volrep-prm", label: "Shop" },
   { href: "/#recovery-philosophy-heading", label: "Recovery" },
-  { href: "/#faq-heading", label: "Support" },
+  { href: "/contact", label: "Contact" },
+  { href: "/track-order", label: "Track Your Order" },
 ];
 
 const FALLBACK_DRAWER_MENU: NavLink[] = [
@@ -55,6 +56,7 @@ const FALLBACK_DRAWER_MENU: NavLink[] = [
   { href: "#", label: "About" },
   { href: "#", label: "Contact" },
   { href: "/#faq-heading", label: "FAQ" },
+  { href: "/track-order", label: "Track Your Order" },
 ];
 
 const FALLBACK_FOOTER_MENU: FooterMenuColumn[] = [
@@ -70,6 +72,7 @@ const FALLBACK_FOOTER_MENU: FooterMenuColumn[] = [
     title: "Support",
     links: [
       { href: "/contact", label: "Contact" },
+      { href: "/track-order", label: "Track Order" },
       { href: "/shipping", label: "Shipping" },
       { href: "/returns", label: "Returns" },
       { href: "/#faq-heading", label: "FAQ" },
@@ -95,7 +98,8 @@ const FALLBACK_SOCIAL_LINKS: SocialLink[] = [
 // --- Content-ops readiness gates ------------------------------------------
 // Shopify Admin already exposes "main-menu" and "footer" menu handles, but
 // their current content is placeholder — main-menu has "Home / Catalog /
-// Contact" instead of this site's "Home / Shop / Recovery / Support", and
+// Contact" instead of this site's "Home / Shop / Recovery / Contact / Track
+// Your Order", and
 // footer has one flat "Search" item instead of grouped Shop/Support/Company
 // columns. Flip these to true once Shopify Admin > Navigation has been
 // updated to match the intended IA — the query already fetches the right
